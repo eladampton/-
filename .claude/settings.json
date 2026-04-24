@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python *)",
+      "Bash(pip *)",
+      "Bash(ls *)",
+      "Bash(ls)",
+      "Bash(cd *)",
+      "Bash(git *)",
+      "Bash(curl *)",
+      "Bash(type *)",
+      "Bash(which *)",
+      "Read(*)",
+      "Write(*)",
+      "Edit(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "TodoWrite(*)"
+    ]
+  }
+}

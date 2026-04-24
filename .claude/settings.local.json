@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'campus-recruitment-system-'\\); from app import app; print\\('App loaded successfully'\\); print\\('DB URI:', app.config.get\\('SQLALCHEMY_DATABASE_URI', 'Not set'\\)\\)\")",
+      "Bash(pip install *)",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'campus-recruitment-system-'\\); from app import app; print\\('✓ App loaded successfully'\\); print\\('✓ DB URI:', app.config.get\\('SQLALCHEMY_DATABASE_URI'\\)\\)\")",
+      "Bash(python -c \"import sys; sys.path.insert\\(0, 'campus-recruitment-system-'\\); from app import app; print\\('App loaded successfully'\\); print\\('DB URI:', app.config.get\\('SQLALCHEMY_DATABASE_URI'\\)\\)\")",
+      "Bash(python init_mysql.py)",
+      "Bash(python -c 'from app import app; from models import User; *)",
+      "Bash(python -c 'import sys; sys.path.insert\\(0, '\\\\''c:/Users/DELL/Desktop/%E9%A1%B9%E7%9B%AE/campus-recruitment-system-'\\\\''\\); from app import app; from models import User; *)",
+      "Bash(python -c \"from app import create_app; app = create_app\\(\\); print\\('App created successfully'\\)\")",
+      "Bash(python -c ' *)",
+      "Read(//c/Users/DELL/Downloads/岗位数据/**)",
+      "Bash(dir \"C:/Users/DELL/Downloads/岗位数据\")",
+      "Bash(python import_csv_data.py)",
+      "Bash(python import_deliveries.py)",
+      "Bash(python -c \"import import_exact\")",
+      "Bash(python import_exact.py)",
+      "Bash(python reimport_all.py)",
+      "Bash(python)",
+      "Bash(net start *)",
+      "Bash(sc query *)",
+      "Bash(findstr \"MySQL\")",
+      "Bash(findstr -i \"mysql\")",
+      "Bash(wmic service *)",
+      "Bash(findstr -i mysql)",
+      "Bash(python import_data.py)"
+    ]
+  }
+}
