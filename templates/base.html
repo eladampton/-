@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>{% block title %}校招简历智能匹配系统{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('public.index') }}">
+                <i class="bi bi-briefcase-fill me-2"></i>
+                智配校招
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('public.index') }}">
+                            <i class="bi bi-house-door me-1"></i>首页
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('public.jobs') }}">
+                            <i class="bi bi-search me-1"></i>浏览岗位
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('public.messages') }}">
+                                <i class="bi bi-envelope me-1"></i>消息
+                            </a>
+                        </li>
+                        {% if current_user.role == 'admin' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.admin_dashboard') }}">
+                                    <i class="bi bi-speedometer2 me-1"></i>管理后台
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('admin.analytics') }}">
+                                    <i class="bi bi-bar-chart-line me-1"></i>数据分析
+                                </a>
+                            </li>
+                        {% elif current_user.role == 'hr' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('hr.hr_dashboard') }}">
+                                    <i class="bi bi-building me-1"></i>HR中心
+                                </a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('seeker.seeker_dashboard') }}">
+                                    <i class="bi bi-person-workspace me-1"></i>个人中心
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('seeker.favorites') }}">
+                                    <i class="bi bi-heart me-1"></i>我的收藏
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>{{ current_user.name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{{ url_for('public.profile') }}">
+                                    <i class="bi bi-person me-2"></i>个人资料
+                                </a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ url_for('public.logout') }}">
+                                    <i class="bi bi-box-arrow-right me-2"></i>退出登录
+                                </a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('public.login') }}">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>登录
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('public.register') }}">
+                                <i class="bi bi-person-plus me-1"></i>注册
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash消息 -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- 主体内容 -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-briefcase-fill me-2"></i>智配校招</h5>
+                    <p class="small text-muted">基于TF-IDF和余弦相似度的智能简历匹配系统</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>快速链接</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url_for('public.jobs') }}" class="text-muted text-decoration-none">浏览岗位</a></li>
+                        <li><a href="{{ url_for('public.register') }}" class="text-muted text-decoration-none">注册账号</a></li>
+                        <li><a href="{{ url_for('public.login') }}" class="text-muted text-decoration-none">用户登录</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>联系我们</h5>
+                    <p class="small text-muted mb-1">
+                        <i class="bi bi-envelope me-2"></i>support@zhipei.com
+                    </p>
+                    <p class="small text-muted">
+                        <i class="bi bi-telephone me-2"></i>400-123-4567
+                    </p>
+                </div>
+            </div>
+            <hr class="my-3">
+            <div class="text-center small text-muted">
+                <p class="mb-0">&copy; 2024 智配校招 - 毕业论文演示项目</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+    {% block extra_js %}{% endblock %}
+    <script>
+        // Add CSRF token to all forms
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            if (csrfToken) {
+                document.querySelectorAll('form[method="POST"]').forEach(function(form) {
+                    let csrfInput = form.querySelector('input[name="csrf_token"]');
+                    if (!csrfInput) {
+                        csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = 'csrf_token';
+                        csrfInput.value = csrfToken;
+                        form.appendChild(csrfInput);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

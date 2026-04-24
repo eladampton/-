@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+
+{% block title %}匹配详情 - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-graph-up me-2"></i>匹配详情</h2>
+        <a href="{{ url_for('seeker.job_seeker_deliveries') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-2"></i>返回投递记录
+        </a>
+    </div>
+
+    <div class="row g-4">
+        <!-- 匹配概览 -->
+        <div class="col-md-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">匹配概览</h5>
+                </div>
+                <div class="card-body text-center">
+                    <!-- 总分 -->
+                    <div class="mb-4">
+                        <div class="display-1 fw-bold text-primary">{{ match_result.final_score if match_result else delivery.match_score }}</div>
+                        <p class="text-muted">综合匹配分数</p>
+                        <div class="progress" style="height: 20px;">
+                            <div class="progress-bar {% if delivery.match_score >= 80 %}bg-success{% elif delivery.match_score >= 60 %}bg-warning{% else %}bg-secondary{% endif %}"
+                                 role="progressbar" style="width: {{ delivery.match_score }}%">
+                                {{ delivery.match_score }}%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 各维度分数 -->
+                    <div class="row g-3 text-start">
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="h4 mb-1 text-primary">{{ match_result.education_score if match_result else 0 }}</div>
+                                <small class="text-muted">学历匹配</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="h4 mb-1 text-success">{{ match_result.skill_score if match_result else 0 }}</div>
+                                <small class="text-muted">技能匹配</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="h4 mb-1 text-info">{{ match_result.experience_score if match_result else 0 }}</div>
+                                <small class="text-muted">专业匹配</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-3 bg-light rounded">
+                                <div class="h4 mb-1 text-warning">{{ ((match_result.similarity_score * 40) | round(1)) if match_result else 0 }}</div>
+                                <small class="text-muted">内容相似度</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 详细报告 -->
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0">{{ job.title }}</h5>
+                    <small class="text-muted">{{ job.city }} | {{ job.education_req }} | {{ job.major_req }}</small>
+                </div>
+                <div class="card-body">
+                    <!-- 匹配项 -->
+                    {% if match_details.matched_items %}
+                    <div class="mb-4">
+                        <h6 class="text-success mb-3">
+                            <i class="bi bi-check-circle me-2"></i>匹配项
+                        </h6>
+                        <ul class="list-group">
+                            {% for item in match_details.matched_items %}
+                            <li class="list-group-item list-group-item-success d-flex align-items-center">
+                                <i class="bi bi-check me-3"></i>{{ item }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- 不匹配项 -->
+                    {% if match_details.unmatched_items %}
+                    <div class="mb-4">
+                        <h6 class="text-danger mb-3">
+                            <i class="bi bi-x-circle me-2"></i>不匹配项
+                        </h6>
+                        <ul class="list-group">
+                            {% for item in match_details.unmatched_items %}
+                            <li class="list-group-item list-group-item-danger d-flex align-items-center">
+                                <i class="bi bi-x me-3"></i>{{ item }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- 优势 -->
+                    {% if match_details.advantages %}
+                    <div class="mb-4">
+                        <h6 class="text-primary mb-3">
+                            <i class="bi bi-star me-2"></i>您的优势
+                        </h6>
+                        <ul class="list-unstyled">
+                            {% for advantage in match_details.advantages %}
+                            <li class="mb-2">
+                                <i class="bi bi-arrow-right text-success me-2"></i>{{ advantage }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- 劣势 -->
+                    {% if match_details.disadvantages %}
+                    <div class="mb-4">
+                        <h6 class="text-warning mb-3">
+                            <i class="bi bi-exclamation-triangle me-2"></i>需要改进
+                        </h6>
+                        <ul class="list-unstyled">
+                            {% for disadvantage in match_details.disadvantages %}
+                            <li class="mb-2">
+                                <i class="bi bi-arrow-right text-warning me-2"></i>{{ disadvantage }}
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <!-- 建议 -->
+                    {% if match_details.suggestions %}
+                    <div class="alert alert-info mb-0">
+                        <h6 class="mb-2"><i class="bi bi-lightbulb me-2"></i>求职建议</h6>
+                        <ul class="mb-0">
+                            {% for suggestion in match_details.suggestions %}
+                            <li>{{ suggestion }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

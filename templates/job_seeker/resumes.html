@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}我的简历 - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-file-earmark-text me-2"></i>我的简历</h2>
+        <div>
+            <a href="{{ url_for('seeker.resume_create') }}" class="btn btn-primary">
+                <i class="bi bi-plus-circle me-2"></i>创建简历
+            </a>
+            <a href="{{ url_for('seeker.resume_upload') }}" class="btn btn-outline-primary">
+                <i class="bi bi-upload me-2"></i>上传简历
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {% for resume in resumes %}
+        <div class="col-md-6">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{ resume.real_name }}</h5>
+                    <span class="badge {% if resume.status == '未投递' %}bg-secondary
+                          {% elif resume.status == '已投递' %}bg-primary
+                          {% else %}bg-success{% endif %}">
+                        {{ resume.status }}
+                    </span>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2 small">
+                        <div class="col-6">
+                            <i class="bi bi-mortarboard me-1"></i>{{ resume.education or '未填写' }}
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-building me-1"></i>{{ resume.school or '未填写' }}
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-book me-1"></i>{{ resume.major or '未填写' }}
+                        </div>
+                        <div class="col-6">
+                            <i class="bi bi-telephone me-1"></i>{{ resume.phone or '未填写' }}
+                        </div>
+                    </div>
+                    {% if resume.skills %}
+                    <div class="mt-3">
+                        {% for skill in resume.skills.split(',')[:5] %}
+                            <span class="badge bg-light text-dark me-1 mb-1">{{ skill.strip() }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% if resume.file_path %}
+                    <div class="mt-3">
+                        <a href="{{ url_for('static', filename=resume.file_path) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                            <i class="bi bi-file-earmark-text me-1"></i>查看文件简历
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-white">
+                    <small class="text-muted">创建于 {{ resume.created_at.strftime('%Y-%m-%d') }}</small>
+                    <div class="float-end">
+                        <a href="{{ url_for('seeker.resume_edit', resume_id=resume.id) }}"
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="POST" action="{{ url_for('seeker.resume_delete', resume_id=resume.id) }}"
+                              class="d-inline" onsubmit="return confirm('确定删除此简历？')">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="card shadow-sm text-center py-5">
+                <div class="card-body">
+                    <i class="bi bi-file-earmark-text display-1 text-muted"></i>
+                    <h4 class="mt-3 text-muted">暂无简历</h4>
+                    <p class="text-muted">创建或上传您的第一份简历，开始求职之旅</p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('seeker.resume_create') }}" class="btn btn-primary me-2">
+                            <i class="bi bi-plus-circle me-2"></i>创建简历
+                        </a>
+                        <a href="{{ url_for('seeker.resume_upload') }}" class="btn btn-outline-primary">
+                            <i class="bi bi-upload me-2"></i>上传简历
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

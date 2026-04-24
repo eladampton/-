@@ -1,0 +1,230 @@
+{% extends 'base.html' %}
+
+{% block title %}智配校招 - 首页{% endblock %}
+
+{% block content %}
+<!-- 首页横幅 -->
+<section class="hero-section py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row align-items-center min-vh-50">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4">智能简历匹配，<br>精准校招求职</h1>
+                <p class="lead mb-4">
+                    基于TF-IDF和余弦相似度算法，为您的简历与校招岗位进行智能匹配，
+                    帮助求职者找到最合适的岗位，帮助HR快速筛选优质人才。
+                </p>
+                <div class="d-flex gap-3">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'user' %}
+                            <a href="{{ url_for('public.jobs') }}" class="btn btn-light btn-lg px-4">
+                                <i class="bi bi-search me-2"></i>浏览岗位
+                            </a>
+                            <a href="{{ url_for('seeker.job_seeker_resumes') }}" class="btn btn-outline-light btn-lg px-4">
+                                <i class="bi bi-file-earmark-text me-2"></i>我的简历
+                            </a>
+                        {% elif current_user.role == 'hr' %}
+                            <a href="{{ url_for('hr.hr_jobs') }}" class="btn btn-light btn-lg px-4">
+                                <i class="bi bi-plus-circle me-2"></i>发布岗位
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ url_for('public.register') }}" class="btn btn-light btn-lg px-4">
+                            <i class="bi bi-person-plus me-2"></i>立即注册
+                        </a>
+                        <a href="{{ url_for('public.jobs') }}" class="btn btn-outline-light btn-lg px-4">
+                            <i class="bi bi-search me-2"></i>浏览岗位
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="hero-stats p-4 bg-white bg-opacity-10 rounded-4">
+                    <div class="row g-4">
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <h3 class="fw-bold">{{ stats.total_users }}</h3>
+                                <p class="mb-0">注册求职者</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <h3 class="fw-bold">{{ stats.total_jobs }}</h3>
+                                <p class="mb-0">热招岗位</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <h3 class="fw-bold">{{ stats.total_resumes }}</h3>
+                                <p class="mb-0">已上传简历</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="stat-item">
+                                <h3 class="fw-bold">{{ stats.total_deliveries }}</h3>
+                                <p class="mb-0">已投递次数</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 特色功能 -->
+<section class="features-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">系统特色功能</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-robot display-4 text-primary"></i>
+                    </div>
+                    <h4>智能匹配算法</h4>
+                    <p class="text-muted">
+                        基于TF-IDF向量化和余弦相似度计算，实现简历与岗位的智能匹配评分
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-file-earmark-text display-4 text-success"></i>
+                    </div>
+                    <h4>简历自动解析</h4>
+                    <p class="text-muted">
+                        支持PDF和Word格式简历上传，系统自动提取关键信息
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card h-100 p-4 text-center">
+                    <div class="feature-icon mb-3">
+                        <i class="bi bi-graph-up display-4 text-info"></i>
+                    </div>
+                    <h4>匹配分析报告</h4>
+                    <p class="text-muted">
+                        生成详细的匹配报告，展示匹配项、不匹配项、优势和改进建议
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 最新岗位 -->
+<section class="jobs-section py-5 bg-light">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0">最新热招岗位</h2>
+            <a href="{{ url_for('public.jobs') }}" class="btn btn-outline-primary">
+                查看更多 <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+        <div class="row g-4">
+            {% for job in jobs %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card job-card h-100 shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title mb-0">{{ job.title }}</h5>
+                            <span class="badge bg-primary">{{ job.city }}</span>
+                        </div>
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-building me-1"></i>{{ job.hr.company or '知名企业' }}
+                        </p>
+                        <p class="card-text text-truncate">{{ job.responsibilities[:50] }}...</p>
+                        <div class="mb-3">
+                            <span class="badge bg-light text-dark me-1">{{ job.education_req }}</span>
+                            {% if job.skills_req %}
+                                {% for skill in job.skills_req.split(',')[:3] %}
+                                    <span class="badge bg-info text-white me-1">{{ skill.strip() }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <a href="{{ url_for('public.job_detail', job_id=job.id) }}" class="btn btn-primary w-100">
+                            查看详情
+                        </a>
+                    </div>
+                    <div class="card-footer text-muted small">
+                        发布于 {{ job.created_at.strftime('%Y-%m-%d') }}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-inbox display-1 text-muted"></i>
+                <p class="mt-3 text-muted">暂无招聘岗位</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- 使用流程 -->
+<section class="process-section py-5">
+    <div class="container">
+        <h2 class="text-center mb-5">如何使用</h2>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="process-card p-4 mb-4 border-start border-4 border-primary">
+                    <h4 class="text-primary"><i class="bi bi-person-circle me-2"></i>求职者</h4>
+                    <ol class="list-unstyled mb-0">
+                        <li class="mb-2"><span class="badge bg-primary me-2">1</span>注册账号并完善个人信息</li>
+                        <li class="mb-2"><span class="badge bg-primary me-2">2</span>创建或上传个人简历</li>
+                        <li class="mb-2"><span class="badge bg-primary me-2">3</span>浏览并投递心仪岗位</li>
+                        <li><span class="badge bg-primary me-2">4</span>查看智能匹配分数和详情</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="process-card p-4 mb-4 border-start border-4 border-success">
+                    <h4 class="text-success"><i class="bi bi-building me-2"></i>企业HR</h4>
+                    <ol class="list-unstyled mb-0">
+                        <li class="mb-2"><span class="badge bg-success me-2">1</span>注册HR账号并认证企业</li>
+                        <li class="mb-2"><span class="badge bg-success me-2">2</span>发布校招岗位信息</li>
+                        <li class="mb-2"><span class="badge bg-success me-2">3</span>查看投递简历列表</li>
+                        <li><span class="badge bg-success me-2">4</span>按匹配分数筛选候选人</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.hero-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 500px;
+}
+.min-vh-50 {
+    min-height: 50vh;
+}
+.hero-stats {
+    backdrop-filter: blur(10px);
+}
+.feature-card {
+    background: white;
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+.job-card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+.job-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+.process-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+</style>
+{% endblock %}

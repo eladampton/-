@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}管理后台 - 数据统计{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- 页面标题 -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-speedometer2 me-2"></i>数据统计仪表盘</h2>
+        <a href="{{ url_for('admin.analytics') }}" class="btn btn-primary">
+            <i class="bi bi-bar-chart-line me-1"></i> 详细数据分析
+        </a>
+    </div>
+
+    <!-- 统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-primary h-100">
+                <div class="card-body text-center">
+                    <h3 class="text-primary">{{ total_jobs }}</h3>
+                    <p class="text-muted mb-0"><i class="bi bi-briefcase me-1"></i>岗位总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-success h-100">
+                <div class="card-body text-center">
+                    <h3 class="text-success">{{ user_count }}</h3>
+                    <p class="text-muted mb-0"><i class="bi bi-people me-1"></i>求职者总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-warning h-100">
+                <div class="card-body text-center">
+                    <h3 class="text-warning">{{ total_deliveries }}</h3>
+                    <p class="text-muted mb-0"><i class="bi bi-send me-1"></i>投递总数</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6 mb-3">
+            <div class="card border-info h-100">
+                <div class="card-body text-center">
+                    <h3 class="text-info">{{ avg_score | round(1) }}</h3>
+                    <p class="text-muted mb-0"><i class="bi bi-graph-up me-1"></i>平均匹配分</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户分布 -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-person-badge me-1"></i>用户分布
+                </div>
+                <div class="card-body text-center">
+                    <div class="row">
+                        <div class="col-4">
+                            <h4 class="text-primary">{{ admin_count }}</h4>
+                            <small class="text-muted">管理员</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-success">{{ hr_count }}</h4>
+                            <small class="text-muted">HR</small>
+                        </div>
+                        <div class="col-4">
+                            <h4 class="text-warning">{{ user_count }}</h4>
+                            <small class="text-muted">求职者</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-pie-chart me-1"></i>匹配分数分布
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>高匹配 (>=80分)</span>
+                        <span class="badge bg-success">{{ match_distribution.high }}</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar bg-success" style="width: {{ (match_distribution.high / (total_deliveries or 1) * 100) | round(1) }}%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>中匹配 (60-79分)</span>
+                        <span class="badge bg-warning">{{ match_distribution.medium }}</span>
+                    </div>
+                    <div class="progress mb-2" style="height: 20px;">
+                        <div class="progress-bar bg-warning" style="width: {{ (match_distribution.medium / (total_deliveries or 1) * 100) | round(1) }}%"></div>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>低匹配 (<60分)</span>
+                        <span class="badge bg-danger">{{ match_distribution.low }}</span>
+                    </div>
+                    <div class="progress" style="height: 20px;">
+                        <div class="progress-bar bg-danger" style="width: {{ (match_distribution.low / (total_deliveries or 1) * 100) | round(1) }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-card-list me-1"></i>快捷操作
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a href="{{ url_for('admin.admin_users') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-people me-2"></i>用户管理
+                        </a>
+                        <a href="{{ url_for('admin.admin_jobs') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-briefcase me-2"></i>岗位管理
+                        </a>
+                        <a href="{{ url_for('admin.admin_deliveries') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-send me-2"></i>投递管理
+                        </a>
+                        <a href="{{ url_for('admin.admin_logs') }}" class="list-group-item list-group-item-action">
+                            <i class="bi bi-clock-history me-2"></i>操作日志
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 热门岗位 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-fire me-1"></i>热门岗位 (投递量最高)
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>岗位名称</th>
+                                    <th>公司</th>
+                                    <th>城市</th>
+                                    <th>投递数</th>
+                                    <th>操作</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job, count in hot_jobs %}
+                                <tr>
+                                    <td><span class="badge bg-{{ 'warning' if loop.index == 1 else 'info' if loop.index == 2 else 'secondary' }}">{{ loop.index }}</span></td>
+                                    <td><a href="{{ url_for('public.job_detail', job_id=job.id) }}" class="text-decoration-none">{{ job.title }}</a></td>
+                                    <td>{{ job.company_name or '-' }}</td>
+                                    <td>{{ job.city or '-' }}</td>
+                                    <td><span class="badge bg-primary">{{ count }}</span></td>
+                                    <td>
+                                        <a href="{{ url_for('admin.toggle_job', job_id=job.id) }}" class="btn btn-sm btn-outline-{{ 'warning' if job.status == '招聘中' else 'success' }}">
+                                            {{ '下架' if job.status == '招聘中' else '上架' }}
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">暂无投递数据</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 最近动态 -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-person-plus me-1"></i>最近注册用户
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for user in recent_users %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <strong>{{ user.name }}</strong>
+                                <small class="text-muted d-block">{{ user.username }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ 'primary' if user.role == 'admin' else 'success' if user.role == 'hr' else 'warning' }}">
+                                    {{ user.role }}
+                                </span>
+                                <small class="text-muted d-block">{{ user.created_at.strftime('%Y-%m-%d') if user.created_at else '-' }}</small>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="list-group-item text-center text-muted">暂无用户</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-send me-1"></i>最近投递
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for delivery in recent_deliveries %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <strong>{{ delivery.job_seeker.name if delivery.job_seeker else '未知用户' }}</strong>
+                                <small class="text-muted d-block">{{ delivery.job.title[:20] if delivery.job else '未知岗位' }}...</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-{{ 'success' if delivery.match_score >= 80 else 'warning' if delivery.match_score >= 60 else 'danger' }}">
+                                    {{ delivery.match_score | round(0) }}分
+                                </span>
+                                <small class="text-muted d-block">{{ delivery.created_at.strftime('%Y-%m-%d %H:%M') if delivery.created_at else '-' }}</small>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="list-group-item text-center text-muted">暂无投递</div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}上传简历 - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-upload me-2"></i>上传简历文件
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="upload-icon mb-3">
+                            <i class="bi bi-cloud-arrow-up display-1 text-primary"></i>
+                        </div>
+                        <p class="text-muted">
+                            支持 PDF、DOC、DOCX 格式<br>
+                            系统会自动解析简历内容
+                        </p>
+                    </div>
+
+                    <form method="POST" action="{{ url_for('seeker.resume_upload') }}" enctype="multipart/form-data">
+                        <div class="mb-4">
+                            <label for="resume_file" class="form-label">选择文件</label>
+                            <input type="file" class="form-control form-control-lg" id="resume_file" name="resume_file"
+                                   accept=".pdf,.doc,.docx" required>
+                            <div class="form-text">文件大小不超过16MB</div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="real_name" class="form-label">补充姓名（可选）</label>
+                            <input type="text" class="form-control" id="real_name" name="real_name"
+                                   placeholder="如果文件名无法识别，请填写您的姓名">
+                        </div>
+
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>温馨提示：</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>建议简历包含联系方式、教育背景、技能等基本信息</li>
+                                <li>PDF格式解析效果最佳</li>
+                                <li>解析完成后，您可以在简历管理中补充完善信息</li>
+                            </ul>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <a href="{{ url_for('seeker.job_seeker_resumes') }}" class="btn btn-outline-secondary btn-lg px-5">
+                                返回
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-cloud-arrow-up me-2"></i>上传简历
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.upload-icon {
+    animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if job %}编辑岗位{% else %}发布岗位{% endif %} - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h4 class="mb-0">
+                        <i class="bi bi-briefcase me-2"></i>
+                        {% if job %}编辑岗位{% else %}发布新岗位{% endif %}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% if job %}{{ url_for('hr.job_edit', job_id=job.id) }}{% else %}{{ url_for('hr.job_create') }}{% endif %}">
+                        <div class="row g-3">
+                            <div class="col-md-8">
+                                <label for="title" class="form-label">岗位名称 <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="title" name="title"
+                                       value="{{ job.title if job else '' }}" required placeholder="例如：Python开发工程师">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="city" class="form-label">工作城市</label>
+                                <input type="text" class="form-control" id="city" name="city"
+                                       value="{{ job.city if job else '' }}" placeholder="例如：北京">
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-3">
+                                <label for="salary_min" class="form-label">最低薪资(K)</label>
+                                <input type="number" class="form-control" id="salary_min" name="salary_min"
+                                       value="{{ job.salary_min if job else '' }}" placeholder="例如：15">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="salary_max" class="form-label">最高薪资(K)</label>
+                                <input type="number" class="form-control" id="salary_max" name="salary_max"
+                                       value="{{ job.salary_max if job else '' }}" placeholder="例如：25">
+                            </div>
+                            <div class="col-md-3">
+                                <label for="education_req" class="form-label">学历要求</label>
+                                <select class="form-select" id="education_req" name="education_req">
+                                    <option value="">不限</option>
+                                    <option value="博士" {% if job and job.education_req == '博士' %}selected{% endif %}>博士</option>
+                                    <option value="硕士" {% if job and job.education_req == '硕士' %}selected{% endif %}>硕士</option>
+                                    <option value="本科" {% if job and job.education_req == '本科' %}selected{% endif %}>本科</option>
+                                    <option value="大专" {% if job and job.education_req == '大专' %}selected{% endif %}>大专</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="recruit_num" class="form-label">招聘人数</label>
+                                <input type="number" class="form-control" id="recruit_num" name="recruit_num"
+                                       value="{{ job.recruit_num if job else 1 }}" min="1">
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="major_req" class="form-label">专业要求</label>
+                            <input type="text" class="form-control" id="major_req" name="major_req"
+                                   value="{{ job.major_req if job else '' }}"
+                                   placeholder="例如：计算机、软件工程、电子信息（多个用逗号分隔）">
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="skills_req" class="form-label">技能要求</label>
+                            <textarea class="form-control" id="skills_req" name="skills_req" rows="2"
+                                      placeholder="例如：Python, Django, MySQL, Redis, Linux（多个用逗号分隔）">{{ job.skills_req if job else '' }}</textarea>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="responsibilities" class="form-label">岗位职责</label>
+                            <textarea class="form-control" id="responsibilities" name="responsibilities" rows="4"
+                                      placeholder="描述该岗位的主要工作内容和职责...">{{ job.responsibilities if job else '' }}</textarea>
+                        </div>
+
+                        <div class="mt-3">
+                            <label for="requirements" class="form-label">任职要求</label>
+                            <textarea class="form-control" id="requirements" name="requirements" rows="4"
+                                      placeholder="描述岗位对候选人的具体要求...">{{ job.requirements if job else '' }}</textarea>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <a href="{{ url_for('hr.hr_jobs') }}" class="btn btn-outline-secondary btn-lg px-5">取消</a>
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-save me-2"></i>{% if job %}保存修改{% else %}发布岗位{% endif %}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

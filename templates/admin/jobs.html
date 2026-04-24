@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}岗位管理 - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-briefcase me-2"></i>岗位管理</h2>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>岗位名称</th>
+                        <th>发布者</th>
+                        <th>城市</th>
+                        <th>投递数</th>
+                        <th>状态</th>
+                        <th>发布时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for job in jobs %}
+                    <tr>
+                        <td>
+                            <a href="{{ url_for('public.job_detail', job_id=job.id) }}" class="text-decoration-none">
+                                {{ job.title }}
+                            </a>
+                        </td>
+                        <td>{{ job.hr.name }} <small class="text-muted">({{ job.hr.company or '-' }})</small></td>
+                        <td>{{ job.city or '-' }}</td>
+                        <td>
+                            <span class="badge bg-info">{{ job.deliveries|length }}</span>
+                        </td>
+                        <td>
+                            <span class="badge {% if job.status == '招聘中' %}bg-success{% else %}bg-secondary{% endif %}">
+                                {{ job.status }}
+                            </span>
+                        </td>
+                        <td>{{ job.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('admin.toggle_job', job_id=job.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-outline-warning">
+                                    {% if job.status == '招聘中' %}下架{% else %}上架{% endif %}
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('admin.delete_job', job_id=job.id) }}" class="d-inline"
+                                  onsubmit="return confirm('确定删除此岗位？')">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页 -->
+        <div class="card-footer">
+            <nav>
+                <ul class="pagination mb-0 justify-content-center">
+                    {% if pagination.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.admin_jobs', page=pagination.prev_num) }}">上一页</a>
+                    </li>
+                    {% endif %}
+                    {% for p in range(1, pagination.pages + 1) %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('admin.admin_jobs', page=p) }}">{{ p }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if pagination.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('admin.admin_jobs', page=pagination.next_num) }}">下一页</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}

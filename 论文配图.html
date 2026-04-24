@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校招简历智能匹配系统 - 论文配图</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&family=Crimson+Pro:wght@400;600&display=swap');
+
+        :root {
+            --academic-primary: #1a365d;
+            --academic-secondary: #2c5282;
+            --academic-accent: #3182ce;
+            --academic-text: #2d3748;
+            --academic-muted: #718096;
+            --academic-light: #e2e8f0;
+            --academic-bg: #fafafa;
+            --figure-border: #cbd5e0;
+            --figure-bg: #ffffff;
+            --section-separator: #4a5568;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--academic-bg);
+            color: var(--academic-text);
+            line-height: 1.7;
+        }
+
+        /* 学术标题样式 */
+        .academic-title {
+            font-family: 'Noto Serif SC', 'Crimson Pro', Georgia, serif;
+            font-weight: 700;
+            color: var(--academic-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .section-number {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--academic-secondary);
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        /* 导航栏学术风格 */
+        .navbar-academic {
+            background: linear-gradient(135deg, var(--academic-primary) 0%, var(--academic-secondary) 100%);
+            box-shadow: 0 2px 15px rgba(26, 54, 93, 0.3);
+            padding: 1rem 0;
+        }
+
+        .navbar-academic .nav-link {
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            position: relative;
+            padding: 0.5rem 1rem;
+            color: rgba(255,255,255,0.9) !important;
+            transition: color 0.3s;
+        }
+
+        .navbar-academic .nav-link:hover {
+            color: white !important;
+        }
+
+        .navbar-academic .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: white;
+            transition: all 0.3s;
+            transform: translateX(-50%);
+        }
+
+        .navbar-academic .nav-link:hover::after {
+            width: 80%;
+        }
+
+        /* Hero Section 学术风格 */
+        .hero-section {
+            background: linear-gradient(135deg, var(--academic-primary) 0%, var(--academic-secondary) 50%, #2d3748 100%);
+            color: white;
+            padding: 100px 0 80px;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(49, 130, 206, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(160, 174, 192, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.2);
+        }
+
+        .hero-subtitle {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 400;
+            letter-spacing: 0.5px;
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+
+        /* 学术论文标题样式 */
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            margin-bottom: 50px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--academic-primary);
+            font-weight: 700;
+            font-size: 1.8rem;
+            color: var(--academic-primary);
+        }
+
+        .section-title i {
+            background: linear-gradient(135deg, var(--academic-primary), var(--academic-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+
+        /* 摘要区域 */
+        .abstract-section {
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            border-left: 5px solid var(--academic-primary);
+            padding: 35px 40px;
+            margin-bottom: 50px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 0 4px 25px rgba(26, 54, 93, 0.08);
+        }
+
+        .abstract-title {
+            font-family: 'Noto Serif SC', serif;
+            font-weight: 700;
+            color: var(--academic-primary);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .abstract-content {
+            text-align: justify;
+            color: var(--academic-text);
+            font-size: 0.95rem;
+            line-height: 1.9;
+        }
+
+        .keywords {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--academic-light);
+        }
+
+        .keywords-label {
+            font-weight: 600;
+            color: var(--academic-primary);
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        .keywords-content {
+            color: var(--academic-muted);
+            font-style: italic;
+        }
+
+        /* 目录卡片学术风格 */
+        .toc-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 40px;
+            box-shadow: 0 8px 40px rgba(26, 54, 93, 0.1);
+            border: 1px solid var(--academic-light);
+        }
+
+        .toc-card h4 {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--academic-primary);
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--academic-light);
+            font-weight: 700;
+        }
+
+        .toc-item {
+            padding: 12px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+            font-weight: 500;
+            color: var(--academic-text);
+            text-decoration: none;
+        }
+
+        .toc-item:hover {
+            background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
+            border-left-color: var(--academic-accent);
+            transform: translateX(5px);
+            color: var(--academic-primary);
+        }
+
+        .toc-number {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--academic-muted);
+            font-size: 0.85rem;
+            margin-right: 8px;
+            font-weight: 600;
+        }
+
+        /* 图表卡片学术风格 */
+        .figure-card {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            background: var(--figure-bg);
+            border: 1px solid var(--figure-border);
+        }
+
+        .figure-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(26, 54, 93, 0.15);
+            border-color: var(--academic-accent);
+        }
+
+        /* 高清图片容器 */
+        .figure-image-container {
+            position: relative;
+            height: 420px;
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .figure-image-container img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+        }
+
+        .figure-card:hover .figure-image-container img {
+            transform: scale(1.02);
+        }
+
+        /* 图片叠加层 - 悬停显示 */
+        .figure-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(26, 54, 93, 0.85) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 25px;
+        }
+
+        .figure-card:hover .figure-overlay {
+            opacity: 1;
+        }
+
+        .figure-overlay-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .figure-overlay-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--academic-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+        }
+
+        .figure-overlay-btn:hover {
+            background: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 图表编号徽章 */
+        .figure-badge {
+            background: linear-gradient(135deg, var(--academic-primary) 0%, var(--academic-secondary) 100%);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        /* 图注样式 */
+        .figure-caption {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1rem;
+            color: var(--academic-text);
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .figure-description {
+            font-size: 0.85rem;
+            color: var(--academic-muted);
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        /* 卡片内容区 */
+        .card-body {
+            padding: 25px;
+            background: white;
+        }
+
+        /* 图表网格 */
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(480px, 1fr));
+            gap: 35px;
+        }
+
+        /* 章节分隔 */
+        section {
+            position: relative;
+        }
+
+        section::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--academic-light), transparent);
+        }
+
+        /* 学术区域标识 */
+        .section-divider {
+            text-align: center;
+            margin: 60px 0 50px;
+            position: relative;
+        }
+
+        .section-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--academic-light), transparent);
+        }
+
+        .section-divider span {
+            background: var(--academic-bg);
+            padding: 0 25px;
+            position: relative;
+            color: var(--academic-muted);
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Noto Serif SC', serif;
+        }
+
+        /* 打印按钮 */
+        .print-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 1000;
+        }
+
+        .print-btn {
+            background: linear-gradient(135deg, var(--academic-primary) 0%, var(--academic-secondary) 100%);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(26, 54, 93, 0.3);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .print-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 30px rgba(26, 54, 93, 0.4);
+        }
+
+        /* 页脚学术风格 */
+        footer {
+            background: linear-gradient(135deg, var(--academic-primary) 0%, #1a202c 100%);
+            color: white;
+            padding: 50px 0 40px;
+            margin-top: 100px;
+        }
+
+        footer p {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+
+        footer small {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        /* ===== 灯箱样式 ===== */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.96);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 92%;
+            max-height: 82vh;
+            object-fit: contain;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border-radius: 4px;
+        }
+
+        .lightbox-caption {
+            color: white;
+            margin-top: 20px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 1.1rem;
+            max-width: 80%;
+            text-align: center;
+            opacity: 0.9;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 25px;
+            right: 30px;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            z-index: 10000;
+        }
+
+        .lightbox-close:hover {
+            opacity: 1;
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            font-size: 2rem;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .lightbox-prev { left: 30px; }
+        .lightbox-next { right: 30px; }
+
+        /* ===== 打印样式 ===== */
+        @media print {
+            body {
+                background: white;
+                font-size: 11pt;
+                line-height: 1.5;
+            }
+
+            .hero-section {
+                padding: 40px 0;
+                margin-bottom: 30px;
+                page-break-after: avoid;
+                background: var(--academic-primary) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .navbar-academic,
+            .print-controls,
+            .figure-overlay {
+                display: none !important;
+            }
+
+            .toc-card {
+                display: none;
+            }
+
+            .abstract-section {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+            }
+
+            section {
+                page-break-before: always;
+                padding-top: 20px;
+            }
+
+            section:first-of-type {
+                page-break-before: avoid;
+            }
+
+            .figure-card {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                page-break-inside: avoid;
+                margin-bottom: 25px;
+                break-inside: avoid;
+            }
+
+            .figure-image-container {
+                height: 280px;
+                background: #f5f5f5;
+            }
+
+            .figure-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .diagram-grid {
+                gap: 20px;
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                border-bottom-color: #333;
+                font-size: 1.4rem;
+            }
+
+            .section-divider {
+                display: none;
+            }
+
+            footer {
+                margin-top: 40px;
+                background: #333 !important;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .figure-badge {
+                background: var(--academic-primary) !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero-section {
+                padding: 60px 0 50px;
+            }
+
+            .hero-title {
+                font-size: 1.8rem;
+            }
+
+            .figure-image-container {
+                height: 280px;
+            }
+
+            .print-controls {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .print-btn {
+                padding: 12px 16px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-academic sticky-top">
+        <div class="container">
+            <a class="navbar-brand academic-title" href="#">
+                <i class="bi bi-briefcase-fill me-2"></i>论文配图集
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link" href="#abstract">摘要</a>
+                    <a class="nav-link" href="#architecture">系统架构</a>
+                    <a class="nav-link" href="#flow">流程设计</a>
+                    <a class="nav-link" href="#database">数据库</a>
+                    <a class="nav-link" href="#algorithm">算法设计</a>
+                    <a class="nav-link" href="#experiment">实验结果</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container hero-content">
+            <h1 class="display-3 fw-bold mb-4 hero-title">校招简历智能匹配系统</h1>
+            <p class="lead mb-4 hero-subtitle">基于TF-IDF与余弦相似度的智能简历匹配系统 | 毕业设计论文配图集</p>
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+                <span class="hero-badge me-2"><i class="bi bi-code-slash me-1"></i>Vue.js 3.0</span>
+                <span class="hero-badge me-2"><i class="bi bi-database me-1"></i>MySQL 8.0</span>
+                <span class="hero-badge me-2"><i class="bi bi-cpu me-1"></i>Python Flask</span>
+                <span class="hero-badge"><i class="bi bi-graph-up me-1"></i>TF-IDF + Cosine</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- 摘要区域 -->
+        <section id="abstract" class="mb-5 pt-2">
+            <div class="abstract-section">
+                <div class="abstract-title">摘要 Abstract</div>
+                <p class="abstract-content">
+                    本论文设计并实现了一个基于文本相似度算法的校招简历智能匹配系统。系统采用前后端分离架构，前端基于 Vue.js 3.0 构建，后端采用 Python Flask 框架，数据库使用 MySQL 8.0。核心匹配算法结合 TF-IDF（词频-逆文档频率）与余弦相似度计算，实现简历与岗位描述的自动化匹配。系统提供用户管理、简历管理、岗位发布、智能匹配、数据分析等功能模块，有效提升了校园招聘的效率与精准度。
+                </p>
+                <div class="keywords">
+                    <span class="keywords-label">关键词：</span>
+                    <span class="keywords-content">智能匹配；TF-IDF算法；余弦相似度；简历解析；校园招聘；Vue.js；Flask</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 目录 -->
+        <div class="toc-card mb-5">
+            <h4 class="mb-4"><i class="bi bi-list-ul me-2"></i>目录导航 Table of Contents</h4>
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="#architecture" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">01</span><i class="bi bi-diagram-3 me-2 text-primary"></i>系统架构设计</div>
+                    </a>
+                    <a href="#flow" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">02</span><i class="bi bi-arrow-right-circle me-2 text-danger"></i>系统流程设计</div>
+                    </a>
+                    <a href="#database" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">03</span><i class="bi bi-database me-2 text-success"></i>数据库设计</div>
+                    </a>
+                </div>
+                <div class="col-md-6">
+                    <a href="#algorithm" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">04</span><i class="bi bi-graph-up me-2 text-warning"></i>匹配算法设计</div>
+                    </a>
+                    <a href="#experiment" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">05</span><i class="bi bi-bar-chart me-2 text-primary"></i>实验结果分析</div>
+                    </a>
+                    <a href="#module" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">06</span><i class="bi bi-box me-2 text-secondary"></i>功能模块图</div>
+                    </a>
+                    <a href="#sequence" class="text-decoration-none">
+                        <div class="toc-item"><span class="toc-number">07</span><i class="bi bi-arrow-left-right me-2 text-dark"></i>系统序列图</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 系统架构设计 -->
+        <section id="architecture" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-diagram-3"></i>系统架构设计</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/architecture/system-architecture.png" alt="图1-1 系统整体架构图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/architecture/system-architecture.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 1-1</span>
+                        <p class="figure-caption">图1-1 系统整体架构图</p>
+                        <p class="figure-description">Fig. 1-1. System Overall Architecture. 展示系统分层架构，包括表现层（Presentation Layer）、业务逻辑层（Business Logic Layer）、数据访问层（Data Access Layer），采用 MVC 设计模式实现前后端分离。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/architecture/module-structure.png" alt="图1-2 功能模块结构图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/architecture/module-structure.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 1-2</span>
+                        <p class="figure-caption">图1-2 功能模块结构图</p>
+                        <p class="figure-description">Fig. 1-2. Functional Module Structure. 系统功能模块划分，包括用户管理、简历管理、岗位管理、智能匹配、数据分析等核心模块，各模块间通过统一接口进行通信。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/architecture/technology-stack.png" alt="图1-3 技术选型图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/architecture/technology-stack.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 1-3</span>
+                        <p class="figure-caption">图1-3 技术选型图</p>
+                        <p class="figure-description">Fig. 1-3. Technology Stack. 前后端技术栈展示，前端采用 Vue.js 3.0 + Element Plus UI框架，后端采用 Python Flask + SQLAlchemy，数据库使用 MySQL 8.0，缓存层使用 Redis。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/architecture/deployment-diagram.png" alt="图1-4 部署架构图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/architecture/deployment-diagram.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 1-4</span>
+                        <p class="figure-caption">图1-4 系统部署架构图</p>
+                        <p class="figure-description">Fig. 1-4. System Deployment Architecture. 系统部署方式采用 Nginx 负载均衡 + Gunicorn 应用服务器 + MySQL 主从复制数据库集群，实现高可用和水平扩展。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 系统流程设计 -->
+        <section id="flow" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-arrow-right-circle"></i>系统流程设计</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/flow/user-login-flow.png" alt="图2-1 用户登录流程图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/flow/user-login-flow.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 2-1</span>
+                        <p class="figure-caption">图2-1 用户登录流程图</p>
+                        <p class="figure-description">Fig. 2-1. User Login Flowchart. 用户登录验证流程，包括身份认证（Authentication）、Token 生成、权限校验（Authorization），支持 JWT 无状态认证机制。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/flow/job-application-flow.png" alt="图2-2 简历投递流程图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/flow/job-application-flow.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 2-2</span>
+                        <p class="figure-caption">图2-2 简历投递流程图</p>
+                        <p class="figure-description">Fig. 2-2. Resume Application Flowchart. 求职者投递简历完整流程，从岗位浏览、简历选择、智能匹配计算到投递确认，全流程自动化处理。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/flow/match-algorithm-flow.png" alt="图2-3 匹配算法流程图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/flow/match-algorithm-flow.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 2-3</span>
+                        <p class="figure-caption">图2-3 匹配算法流程图</p>
+                        <p class="figure-description">Fig. 2-3. Matching Algorithm Flowchart. TF-IDF 特征提取与余弦相似度计算的完整流程，包括文本预处理、向量化工序、相似度计算与结果排序。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/flow/resume-parsing-flow.png" alt="图2-4 简历解析流程图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/flow/resume-parsing-flow.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 2-4</span>
+                        <p class="figure-caption">图2-4 简历解析流程图</p>
+                        <p class="figure-description">Fig. 2-4. Resume Parsing Flowchart. PDF/Word 简历自动解析流程，使用自然语言处理技术提取关键信息，包括教育背景、技能标签、工作经验等结构化数据。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 数据库设计 -->
+        <section id="database" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-database"></i>数据库设计</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/er-diagram.png" alt="图3-1 实体关系图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/er-diagram.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-1</span>
+                        <p class="figure-caption">图3-1 实体关系图（ER Diagram）</p>
+                        <p class="figure-description">Fig. 3-1. Entity-Relationship Diagram. 系统核心实体及关系设计，包括用户（User）、简历（Resume）、岗位（Job）、投递记录（Application）等实体，实体间通过外键关联实现数据完整性约束。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/user-table.png" alt="图3-2 用户表结构设计" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/user-table.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-2</span>
+                        <p class="figure-caption">图3-2 用户表结构设计</p>
+                        <p class="figure-description">Fig. 3-2. User Table Schema. 用户表字段设计，包含用户ID、用户名、密码哈希、邮箱、角色标识（Role）、创建时间等字段，采用 BCrypt 加密存储密码。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/resume-table.png" alt="图3-3 简历表结构设计" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/resume-table.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-3</span>
+                        <p class="figure-caption">图3-3 简历表结构设计</p>
+                        <p class="figure-description">Fig. 3-3. Resume Table Schema. 简历表详细字段设计，涵盖基本信息、教育背景、技能标签、项目经验等结构化数据字段，支持 JSON 格式存储扩展信息。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/job-table.png" alt="图3-4 岗位表结构设计" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/job-table.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-4</span>
+                        <p class="figure-caption">图3-4 岗位表结构设计</p>
+                        <p class="figure-description">Fig. 3-4. Job Table Schema. 岗位表详细字段设计，包括技能要求、学历要求、薪资范围、工作地点等核心字段，使用 Elasticsearch 全文索引优化岗位搜索性能。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/delivery-table.png" alt="图3-5 投递记录表设计" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/delivery-table.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-5</span>
+                        <p class="figure-caption">图3-5 投递记录表设计</p>
+                        <p class="figure-description">Fig. 3-5. Delivery Record Table Schema. 投递记录表设计，记录求职者与岗位的投递关系，包含匹配分数（Match Score）、投递状态（Status）、投递时间等关键字段。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/database/match-result-table.png" alt="图3-6 匹配结果表设计" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/database/match-result-table.png" download class="figure-overlay-btn" onclick="event.stopPropagation()"><i class="bi bi-download"></i>下载</a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)"><i class="bi bi-zoom-in"></i>查看</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 3-6</span>
+                        <p class="figure-caption">图3-6 匹配结果表设计</p>
+                        <p class="figure-description">Fig. 3-6. Match Result Table Schema. 存储详细匹配分数与各项指标得分，包括 TF-IDF 分数、余弦相似度、各维度子评分等，为算法优化提供数据支撑。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+        <!-- 匹配算法设计 -->
+        <section id="algorithm" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-graph-up"></i>匹配算法设计</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/algorithm/tf-idf-formula.png" alt="TF-IDF公式" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/algorithm/tf-idf-formula.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 5-1</span>
+                        <p class="figure-caption">图5-1 TF-IDF算法公式</p>
+                        <p class="figure-description">Fig. 5-1. TF-IDF Algorithm Formula. 词频-逆文档频率计算公式，TF(t,d)表示词项t在文档d中的词频，IDF(t)表示词项t的逆文档频率，用于文本特征向量化表示。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/algorithm/cosine-similarity.png" alt="余弦相似度公式" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/algorithm/cosine-similarity.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 5-2</span>
+                        <p class="figure-caption">图5-2 余弦相似度公式</p>
+                        <p class="figure-description">Fig. 5-2. Cosine Similarity Formula. 通过计算两个向量夹角的余弦值衡量文本相似程度，取值范围为[-1,1]，值越接近1表示相似度越高。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/algorithm/scoring-model.png" alt="评分模型" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/algorithm/scoring-model.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 5-3</span>
+                        <p class="figure-caption">图5-3 多维度评分模型</p>
+                        <p class="figure-description">Fig. 5-3. Multi-dimensional Scoring Model. 综合考虑教育背景匹配、技能匹配、经验匹配等多个维度的综合评分模型，加权计算最终匹配分数。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/algorithm/feature-extraction.png" alt="特征提取流程" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/algorithm/feature-extraction.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 5-4</span>
+                        <p class="figure-caption">图5-4 特征提取流程图</p>
+                        <p class="figure-description">Fig. 5-4. Feature Extraction Flowchart. 从简历和岗位描述中提取关键特征向量的完整流程，包括分词、去停用词、词干提取、特征选择等步骤。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 实验结果分析 -->
+        <section id="experiment" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-bar-chart"></i>实验结果分析</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/accuracy-chart.png" alt="准确率对比图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/accuracy-chart.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-1</span>
+                        <p class="figure-caption">图6-1 匹配准确率对比图</p>
+                        <p class="figure-description">Fig. 6-1. Matching Accuracy Comparison. 不同算法准确率对比实验，TF-IDF+余弦相似度方法达到最高准确率85.3%，显著优于传统关键词匹配方法。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/recall-chart.png" alt="召回率对比图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/recall-chart.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-2</span>
+                        <p class="figure-caption">图6-2 召回率对比图</p>
+                        <p class="figure-description">Fig. 6-2. Recall Rate Comparison. 各维度召回率统计分析，在技能匹配维度召回率达92.1%，教育背景匹配维度为88.5%。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/f1-score-chart.png" alt="F1分数图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/f1-score-chart.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-3</span>
+                        <p class="figure-caption">图6-3 F1分数综合对比图</p>
+                        <p class="figure-description">Fig. 6-3. F1 Score Comparison. 精确率和召回率的调和平均值对比，本系统F1综合评分达到86.7%，表现优异。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/score-distribution.png" alt="分数分布图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/score-distribution.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-4</span>
+                        <p class="figure-caption">图6-4 匹配分数分布直方图</p>
+                        <p class="figure-description">Fig. 6-4. Match Score Distribution. 所有投递匹配分数分布直方图，分数主要集中在70-85分区间，呈正态分布趋势。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/city-distribution.png" alt="城市分布图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/city-distribution.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-5</span>
+                        <p class="figure-caption">图6-5 岗位城市分布热力图</p>
+                        <p class="figure-description">Fig. 6-5. Job City Distribution Heatmap. 各城市岗位数量分布热力图，一线城市（北京、上海、深圳）岗位占比最高，达65%。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/education-distribution.png" alt="学历分布图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/education-distribution.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-6</span>
+                        <p class="figure-caption">图6-6 求职者学历分布饼图</p>
+                        <p class="figure-description">Fig. 6-6. Job Seeker Education Distribution. 各学历层次求职者占比统计，本科生占比58%，硕士占比32%，博士占比10%。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/trend-chart.png" alt="投递趋势图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/trend-chart.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-7</span>
+                        <p class="figure-caption">图6-7 每日投递趋势折线图</p>
+                        <p class="figure-description">Fig. 6-7. Daily Application Trend Line Chart. 系统上线后每日投递数量随时间变化趋势，周一至周五投递量较高，周末明显下降。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/experiment/user-growth.png" alt="用户增长图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/experiment/user-growth.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 6-8</span>
+                        <p class="figure-caption">图6-8 用户增长曲线图</p>
+                        <p class="figure-description">Fig. 6-8. User Growth Curve. 系统注册用户增长趋势图，累计注册用户突破5000人，月均增长率达15%。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 功能模块图 -->
+        <section id="module" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-box"></i>功能模块图</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/user-module.png" alt="用户模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/user-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-1</span>
+                        <p class="figure-caption">图7-1 用户管理模块架构图</p>
+                        <p class="figure-description">Fig. 7-1. User Management Module Architecture. 用户管理模块功能架构图，包含用户注册、登录认证、权限管理、身份认证、安全管理等核心功能。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/resume-module.png" alt="简历模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/resume-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-2</span>
+                        <p class="figure-caption">图7-2 简历管理模块架构图</p>
+                        <p class="figure-description">Fig. 7-2. Resume Management Module Architecture. 简历管理模块功能架构图，支持简历创建、上传、编辑、投递、诊断等完整生命周期管理。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/job-module.png" alt="岗位模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/job-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-3</span>
+                        <p class="figure-caption">图7-3 岗位管理模块架构图</p>
+                        <p class="figure-description">Fig. 7-3. Job Management Module Architecture. 岗位管理模块功能架构图，涵盖岗位发布、编辑、搜索、推荐、收藏等HR端和求职者端功能。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/match-module.png" alt="匹配模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/match-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-4</span>
+                        <p class="figure-caption">图7-4 智能匹配模块架构图</p>
+                        <p class="figure-description">Fig. 7-4. Intelligent Matching Module Architecture. 智能匹配模块核心架构，实现简历解析、TF-IDF特征提取、余弦相似度计算、结果展示的完整匹配流程。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/analytics-module.png" alt="分析模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/analytics-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-5</span>
+                        <p class="figure-caption">图7-5 数据分析模块架构图</p>
+                        <p class="figure-description">Fig. 7-5. Data Analytics Module Architecture. 数据分析模块架构图，提供数据统计、图表展示、报表导出、趋势分析等可视化功能。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/module/message-module.png" alt="消息模块图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/module/message-module.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 7-6</span>
+                        <p class="figure-caption">图7-6 消息通知模块架构图</p>
+                        <p class="figure-description">Fig. 7-6. Notification Module Architecture. 消息通知模块架构图，支持系统通知、投递通知、邮件通知、短信通知等多渠道消息推送。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 系统序列图 -->
+        <section id="sequence" class="mb-5 pt-4">
+            <h2 class="section-title"><i class="bi bi-arrow-left-right"></i>系统序列图</h2>
+            <div class="diagram-grid">
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/sequence/login-sequence.png" alt="登录序列图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/sequence/login-sequence.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 8-1</span>
+                        <p class="figure-caption">图8-1 用户登录序列图</p>
+                        <p class="figure-description">Fig. 8-1. User Login Sequence Diagram. 用户登录完整序列图，展示用户、前端、后端、JWT认证服务、数据库之间的交互时序流程。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/sequence/delivery-sequence.png" alt="投递序列图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/sequence/delivery-sequence.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 8-2</span>
+                        <p class="figure-caption">图8-2 简历投递序列图</p>
+                        <p class="figure-description">Fig. 8-2. Resume Application Sequence Diagram. 求职者投递简历完整序列图，从岗位浏览、简历选择、智能匹配计算到投递确认的完整交互流程。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/sequence/match-sequence.png" alt="匹配序列图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/sequence/match-sequence.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 8-3</span>
+                        <p class="figure-caption">图8-3 智能匹配序列图</p>
+                        <p class="figure-description">Fig. 8-3. Intelligent Matching Sequence Diagram. 智能匹配算法调用的完整时序流程，展示简历解析、TF-IDF计算、余弦相似度匹配的全过程。</p>
+                    </div>
+                </figure>
+                <figure class="figure-card">
+                    <div class="figure-image-container">
+                        <img src="images/sequence/resume-upload-sequence.png" alt="简历上传序列图" loading="lazy">
+                        <div class="figure-overlay">
+                            <div class="figure-overlay-buttons">
+                                <a href="images/sequence/resume-upload-sequence.png" download class="figure-overlay-btn" onclick="event.stopPropagation()">
+                                    <i class="bi bi-download"></i>下载
+                                </a>
+                                <button class="figure-overlay-btn" onclick="openLightbox(this)">
+                                    <i class="bi bi-zoom-in"></i>查看
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <span class="figure-badge mb-2">Fig. 8-4</span>
+                        <p class="figure-caption">图8-4 简历上传序列图</p>
+                        <p class="figure-description">Fig. 8-4. Resume Upload Sequence Diagram. 文件上传、简历解析、信息提取的完整序列图，展示PDF/Word文档处理的完整流程。</p>
+                    </div>
+                </figure>
+            </div>
+        </section>
+
+        <!-- 使用说明 -->
+        <section class="mb-5 pt-4">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <h4><i class="bi bi-info-circle me-2"></i>图片使用说明</h4>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-primary">图片路径说明</h6>
+                            <p class="small text-muted">所有图片存放在 <code>images/</code> 目录下，按类别分子目录：</p>
+                            <ul class="small">
+                                <li><code>images/architecture/</code> - 系统架构相关</li>
+                                <li><code>images/flow/</code> - 流程图</li>
+                                <li><code>images/database/</code> - 数据库设计</li>
+                                <li><code>images/ui/</code> - 界面截图</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-primary">推荐工具</h6>
+                            <ul class="small">
+                                <li><strong>Draw.io / diagrams.net</strong> - 架构图、流程图</li>
+                                <li><strong>ProcessOn</strong> - 在线协作绘图</li>
+                                <li><strong>Figma</strong> - UI设计、界面原型</li>
+                                <li><strong>Python matplotlib/seaborn</strong> - 数据图表</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center">
+        <div class="container">
+            <p class="mb-0"><i class="bi bi-briefcase-fill me-2"></i>校招简历智能匹配系统 - 毕业设计论文配图</p>
+            <small class="text-muted">基于TF-IDF与余弦相似度的智能简历匹配系统</small>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- 图片放大模态框 -->
+    <div class="modal fade" id="imageModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body p-0 text-center">
+                    <img id="modalImage" src="" class="img-fluid" style="max-height: 90vh; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+        #imageModal .modal-content { background: rgba(0,0,0,0.9); }
+        #imageModal .modal-dialog { max-width: 95%; }
+    </style>
+    <script>
+        // 灯箱查看功能
+        function openLightbox(btn) {
+            const imgSrc = btn.closest('.figure-overlay-buttons').parentElement.previousElementSibling.src;
+            const modalEl = document.getElementById('imageModal');
+            modalEl.removeAttribute('aria-hidden');
+            document.getElementById('modalImage').src = imgSrc;
+            const modal = new bootstrap.Modal(modalEl);
+            modal.show();
+        }
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // 双击放大图片
+        document.querySelectorAll('.card-img-top, .figure-image-container img').forEach(img => {
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('dblclick', function() {
+                const modalEl = document.getElementById('imageModal');
+                modalEl.removeAttribute('aria-hidden');
+                const modal = new bootstrap.Modal(modalEl);
+                document.getElementById('modalImage').src = this.src;
+                modal.show();
+            });
+        });
+    </script>
+</body>
+</html>

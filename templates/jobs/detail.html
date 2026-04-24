@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} - 智配校招{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">{{ job.title }}</h4>
+                    <div>
+                        {% if current_user.is_authenticated and current_user.role == 'user' %}
+                        <button class="btn btn-outline-danger btn-sm favorite-btn" id="favoriteBtn" onclick="toggleFavorite()">
+                            <i class="bi bi-heart"></i> 收藏
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <strong><i class="bi bi-geo-alt me-1"></i>工作地点</strong>
+                            <p class="text-muted">{{ job.city or '待定' }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <strong><i class="bi bi-mortarboard me-1"></i>学历要求</strong>
+                            <p class="text-muted">{{ job.education_req or '不限' }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <strong><i class="bi bi-people me-1"></i>招聘人数</strong>
+                            <p class="text-muted">{{ job.recruit_num }}人</p>
+                        </div>
+                    </div>
+
+                    {% if job.salary_min and job.salary_max %}
+                    <div class="alert alert-success mb-4">
+                        <strong><i class="bi bi-currency-yen me-1"></i>薪资待遇</strong>
+                        <span class="fs-5 ms-2">{{ job.salary_min }}-{{ job.salary_max }}K/月</span>
+                    </div>
+                    {% endif %}
+
+                    {% if job.company_name %}
+                    <div class="mb-4">
+                        <strong><i class="bi bi-building me-1"></i>公司名称</strong>
+                        <p class="text-muted">{{ job.company_name }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if job.skills_req %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="bi bi-stars me-2"></i>技能要求</h6>
+                        <div>{% for skill in job.skills_req.split(',') %}<span class="badge bg-light text-dark me-2 mb-1 p-2">{{ skill.strip() }}</span>{% endfor %}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if job.major_req %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="bi bi-book me-2"></i>专业要求</h6>
+                        <p>{{ job.major_req }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if job.experience_req %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="bi bi-clock-history me-2"></i>经验要求</h6>
+                        <p>{{ job.experience_req }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if job.responsibilities %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="bi bi-clipboard-check me-2"></i>岗位职责</h6>
+                        <pre class="bg-light p-3 rounded border-0" style="white-space: pre-wrap; font-family: inherit;">{{ job.responsibilities }}</pre>
+                    </div>
+                    {% endif %}
+
+                    {% if job.requirements %}
+                    <div class="mb-4">
+                        <h6 class="text-primary"><i class="bi bi-list-check me-2"></i>任职要求</h6>
+                        <pre class="bg-light p-3 rounded border-0" style="white-space: pre-wrap; font-family: inherit;">{{ job.requirements }}</pre>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between text-muted small">
+                        <span><i class="bi bi-eye me-1"></i>浏览次数: {{ job.views or 0 }}</span>
+                        <span><i class="bi bi-calendar me-1"></i>发布时间: {{ job.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card shadow-sm sticky-top" style="top: 100px;">
+                <div class="card-body">
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'user' %}
+                            {% if user_delivery %}
+                                <div class="text-center">
+                                    <div class="alert alert-success">
+                                        <i class="bi bi-check-circle-fill me-2"></i>您已投递此岗位
+                                    </div>
+                                    <p>匹配分数：<span class="badge bg-primary fs-5">{{ user_delivery.match_score }}分</span></p>
+                                    <a href="{{ url_for('seeker.match_result', delivery_id=user_delivery.id) }}" class="btn btn-outline-primary w-100">查看匹配详情</a>
+                                </div>
+                            {% elif has_resume %}
+                                <h6><i class="bi bi-send me-2"></i>投递简历</h6>
+                                <p class="text-muted small">投递后将自动计算您与该岗位的匹配分数</p>
+                                <form method="POST" action="{{ url_for('seeker.job_seeker_deliver') }}">
+                                    <input type="hidden" name="job_id" value="{{ job.id }}">
+                                    <select name="resume_id" class="form-select mb-3" required>
+                                        <option value="">选择简历</option>
+                                        {% for resume in current_user.resumes %}<option value="{{ resume.id }}">{{ resume.real_name }} - {{ resume.school or '未填写学校' }}</option>{% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="bi bi-send me-2"></i>一键投递
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-circle me-2"></i>请先创建简历
+                                </div>
+                                <a href="{{ url_for('seeker.resume_create') }}" class="btn btn-outline-primary w-100">创建简历</a>
+                            {% endif %}
+                        {% elif current_user.role == 'hr' %}
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>这是{{ job.hr.company or 'HR' }}发布的岗位
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="text-center">
+                            <p class="text-muted">登录后即可投递简历</p>
+                            <a href="{{ url_for('public.login') }}" class="btn btn-primary w-100 mb-2">登录</a>
+                            <a href="{{ url_for('public.register') }}" class="btn btn-outline-primary w-100">注册账号</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if current_user.is_authenticated and current_user.role == 'user' %}
+<script>
+// 记录浏览足迹
+let startTime = Date.now();
+window.addEventListener('beforeunload', function() {
+    const stayDuration = Math.floor((Date.now() - startTime) / 1000);
+    navigator.sendBeacon('{{ url_for("seeker.record_browse") }}',
+        new URLSearchParams({job_id: {{ job.id }}, stay_duration: stayDuration}));
+});
+
+// 检查收藏状态
+fetch('{{ url_for("seeker.check_favorite", job_id=job.id) }}')
+    .then(r => r.json())
+    .then(data => {
+        if (data.is_favorited) {
+            const btn = document.getElementById('favoriteBtn');
+            btn.classList.remove('btn-outline-danger');
+            btn.classList.add('btn-danger');
+            btn.innerHTML = '<i class="bi bi-heart-fill"></i> 已收藏';
+        }
+    });
+
+// 收藏/取消收藏
+function toggleFavorite() {
+    fetch('{{ url_for("seeker.toggle_favorite") }}', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: 'job_id={{ job.id }}'
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            const btn = document.getElementById('favoriteBtn');
+            if (data.action === 'added') {
+                btn.classList.remove('btn-outline-danger');
+                btn.classList.add('btn-danger');
+                btn.innerHTML = '<i class="bi bi-heart-fill"></i> 已收藏';
+            } else {
+                btn.classList.remove('btn-danger');
+                btn.classList.add('btn-outline-danger');
+                btn.innerHTML = '<i class="bi bi-heart"></i> 收藏';
+            }
+        }
+    });
+}
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}投递记录 - 智配校招{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="bi bi-send me-2"></i>投递记录</h2>
+        <a href="{{ url_for('public.jobs') }}" class="btn btn-primary">
+            <i class="bi bi-search me-2"></i>浏览更多岗位
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>岗位名称</th>
+                            <th>公司/HR</th>
+                            <th>匹配分数</th>
+                            <th>投递状态</th>
+                            <th>投递时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for delivery in deliveries %}
+                        <tr>
+                            <td>
+                                <a href="{{ url_for('public.job_detail', job_id=delivery.job_id) }}" class="text-decoration-none fw-bold">
+                                    {{ delivery.job.title }}
+                                </a>
+                                <br>
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ delivery.job.city }}
+                                </small>
+                            </td>
+                            <td>{{ delivery.job.hr.company or '知名企业' }}</td>
+                            <td>
+                                <span class="badge fs-6 {% if delivery.match_score >= 80 %}bg-success
+                                      {% elif delivery.match_score >= 60 %}bg-warning text-dark
+                                      {% else %}bg-secondary{% endif %}">
+                                    {{ delivery.match_score }}分
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {% if delivery.status == '待查看' %}bg-secondary
+                                      {% elif delivery.status == '已查看' %}bg-info
+                                      {% elif delivery.status == '已联系' %}bg-success
+                                      {% else %}bg-danger{% endif %}">
+                                    {{ delivery.status }}
+                                </span>
+                            </td>
+                            <td>{{ delivery.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <a href="{{ url_for('seeker.match_result', delivery_id=delivery.id) }}"
+                                   class="btn btn-sm btn-outline-info">
+                                    查看匹配详情
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <i class="bi bi-inbox display-1 text-muted"></i>
+                                <p class="mt-3 text-muted">暂无投递记录</p>
+                                <a href="{{ url_for('public.jobs') }}" class="btn btn-primary">
+                                    去投递简历
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
